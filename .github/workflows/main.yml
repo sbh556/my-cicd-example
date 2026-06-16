@@ -29,9 +29,3 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPO:$TAG .
           docker push $REGISTRY/$REPO:$TAG
-      - name: Download current task definition
-        run: |
-          aws ecs describe-task-definition \
-            --task-definition hello-world \
-            --query 'taskDefinition | {family:family, networkMode:networkMode, requiresCompatibilities:requiresCompatibilities, cpu:cpu, memory:memory, executionRoleArn:executionRoleArn, taskRoleArn:taskRoleArn, containerDefinitions:containerDefinitions}' \
-            --output json > taskdef.json
