@@ -16,11 +16,16 @@ jobs:
       - name: Login to ECR
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
+      - name: get Version
+        id: version
+        run: |
+          VERSION=$(grep -oP '__version__\s*=\s*["\x27]\K[^"\x27]+' hello-world.py)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Build, tag, push
         env:
           REGISTRY: ${{ steps.ecr.outputs.registry }}
           REPO: interview/daniels_saada
-          TAG: ${{ github.sha }}
+          TAG: ${{ steps.version.outputs.version }}
         run: |
           docker build -t $REGISTRY/$REPO:$TAG .
           docker push $REGISTRY/$REPO:$TAG
